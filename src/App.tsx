@@ -2,7 +2,7 @@ import { MapboxOverlay } from "@deck.gl/mapbox";
 import { Drawer, Select, Space, Tabs, Tooltip } from "antd";
 import { H3HexagonLayer, type DeckGLProps } from "deck.gl";
 import "maplibre-gl/dist/maplibre-gl.css";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Map, { useControl, type MapRef } from "react-map-gl/maplibre";
 import "./App.css";
 
@@ -13,7 +13,7 @@ import { interpolateViridis } from "d3-scale-chromatic";
 import { Legend } from "./Legend";
 
 type LayerProps = {
-  id: string;
+  value: string;
   name: string;
   domain: number[];
   depths: number[];
@@ -109,12 +109,18 @@ function App() {
   }, []);
 
   useEffect(() => {
-    fetch("202307-0-traffic_density-h3.json.gz", {
-      headers: {
-        "Content-Type": "application/json",
-        "Accept-Encoding": "gzip",
-      },
-    })
+    if (!selectedLayer) {
+      return;
+    }
+    fetch(
+      `/data/${selectedMonth}-${selectedDepth}-${selectedLayer?.value}.json.gz`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          "Accept-Encoding": "gzip",
+        },
+      }
+    )
       .then((res) => res.json())
       .then((data) => setData(data));
   }, [selectedLayer, selectedDepth, selectedMonth]);
@@ -127,24 +133,31 @@ function App() {
     }
   }, [openDrawer]);
 
+  useEffect(() => {
+    console.log(data);
+  }, [data]);
+
   const onClose = () => {
     setOpenDrawer(false);
   };
 
-  const layers = [
-    new H3HexagonLayer({
-      id: "h3-hexagon-layer",
-      data: data,
-      getHexagon: (d) => d.h3,
-      getFillColor: (d) => toRGB(getColor(d.traffic_density)),
-      pickable: true,
-      highPrecision: true,
-      beforeId: "watername_ocean", // In interleaved mode render the layer under map labels
-      onClick: (e) => {
-        console.log(e.object.traffic_density);
-      },
-    }),
-  ];
+  const layers = useMemo(
+    () => [
+      new H3HexagonLayer({
+        id: "h3-hexagon-layer",
+        data: data,
+        getHexagon: (d) => d.h3,
+        getFillColor: (d) => toRGB(getColor(d.value)),
+        pickable: true,
+        highPrecision: true,
+        beforeId: "watername_ocean", // In interleaved mode render the layer under map labels
+        onClick: (e) => {
+          // console.log(e.object.traffic_density);
+        },
+      }),
+    ],
+    [data]
+  );
 
   return (
     <>
