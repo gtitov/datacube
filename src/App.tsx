@@ -1,3 +1,4 @@
+//@ts-nocheck
 import { MapboxOverlay } from "@deck.gl/mapbox";
 import { Drawer, Select, Space, Tabs, Tooltip } from "antd";
 import { H3HexagonLayer, type DeckGLProps } from "deck.gl";
@@ -84,7 +85,7 @@ const availableMonths = [
 function App() {
   const mapRef = useRef<MapRef>(null);
   const [openDrawer, setOpenDrawer] = useState(false);
-  const [availableLayers, setAvaliableLayers] = useState([]);
+  const [availableLayers, setAvaliableLayers] = useState<LayerProps[]>([]);
   const [selectedLayer, setSelectedLayer] = useState<LayerProps | null>(null);
   const [selectedDepth, setSelectedDepth] = useState(0);
   const [selectedMonth, setSelectedMonth] = useState("202307");
@@ -108,22 +109,24 @@ function App() {
       });
   }, []);
 
-  useEffect(() => {
-    if (!selectedLayer) {
-      return;
-    }
-    fetch(
-      `/data/${selectedMonth}-${selectedDepth}-${selectedLayer?.value}.json.gz`,
-      {
-        headers: {
-          "Content-Type": "application/json",
-          "Accept-Encoding": "gzip",
-        },
-      }
-    )
-      .then((res) => res.json())
-      .then((data) => setData(data));
-  }, [selectedLayer, selectedDepth, selectedMonth]);
+  // useEffect(() => {
+  //   console.log(selectedLayer?.value, selectedDepth, selectedMonth);
+  //   if (!selectedLayer?.value) {
+  //     return;
+  //   }
+  //   console.log(321);
+  //   fetch(
+  //     `./data/${selectedMonth}-${selectedDepth}-${selectedLayer?.value}.json.gz`,
+  //     {
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //         "Accept-Encoding": "gzip",
+  //       },
+  //     }
+  //   )
+  //     .then((res) => res.json())
+  //     .then((data) => setData(data));
+  // }, [selectedLayer?.value, selectedDepth, selectedMonth]);
 
   useEffect(() => {
     if (openDrawer) {
@@ -133,30 +136,25 @@ function App() {
     }
   }, [openDrawer]);
 
-  useEffect(() => {
-    console.log(data);
-  }, [data]);
-
   const onClose = () => {
     setOpenDrawer(false);
   };
+  console.log(selectedMonth);
 
   const layers = useMemo(
     () => [
       new H3HexagonLayer({
         id: "h3-hexagon-layer",
-        data: data,
+        data: `./data/${selectedMonth}-${selectedDepth}-${selectedLayer?.value}.json.gz`,
+        // Попробовать менять не все гексы, а только значения, т. е. getFillColor
         getHexagon: (d) => d.h3,
         getFillColor: (d) => toRGB(getColor(d.value)),
-        pickable: true,
-        highPrecision: true,
-        beforeId: "watername_ocean", // In interleaved mode render the layer under map labels
-        onClick: (e) => {
-          // console.log(e.object.traffic_density);
-        },
+        // pickable: true,
+        // highPrecision: true,
+        // beforeId: "watername_ocean", // In interleaved mode render the layer under map labels
       }),
     ],
-    [data]
+    [selectedMonth, selectedDepth, selectedLayer?.value]
   );
 
   return (
@@ -180,7 +178,7 @@ function App() {
           //   mapRef.current?.easeTo({ padding: { bottom: 378 } });
           // }}
         >
-          <DeckGLOverlay layers={layers} />
+          {mapRef.current?.isStyleLoaded() && <DeckGLOverlay layers={layers} />}
         </Map>
       </div>
       <Drawer
@@ -205,7 +203,11 @@ function App() {
         <Space direction="vertical" style={{ width: "100%" }}>
           <Select
             options={availableLayers}
-            onChange={setSelectedLayer}
+            onChange={(e) =>
+              setSelectedLayer(
+                availableLayers.find((l) => e === l.value) || null
+              )
+            }
             style={{ width: "100%" }}
             value={selectedLayer}
           />
