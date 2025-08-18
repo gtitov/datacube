@@ -1,0 +1,13 @@
+[
+    {
+        "value": "traffic_density",
+        "label": "Vessel Density, Hrs per km2",
+        "domain": [
+            0,
+            4
+        ],
+        "depths": [
+            0
+        ]
+    }
+]
