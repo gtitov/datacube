@@ -18,6 +18,7 @@
     "d3-scale-chromatic": "^3.1.0",
     "deck.gl": "^9.1.14",
     "maplibre-gl": "^5.6.2",
+    "pako": "^2.1.0",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "react-map-gl": "^8.0.4"

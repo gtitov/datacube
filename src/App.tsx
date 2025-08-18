@@ -11,6 +11,7 @@ import { color } from "d3-color";
 import { scaleSequential } from "d3-scale";
 import { interpolateViridis } from "d3-scale-chromatic";
 
+import { inflate } from "pako";
 import { Legend } from "./Legend";
 
 type LayerProps = {
@@ -19,6 +20,16 @@ type LayerProps = {
   domain: number[];
   depths: number[];
 };
+
+function isGzip(uint8array: Uint8Array) {
+  // Ensure the input has at least 2 bytes
+  if (uint8array.length < 2) {
+    return false;
+  }
+
+  // Check the magic number
+  return uint8array[0] === 0x1f && uint8array[1] === 0x8b;
+}
 
 function toRGB(hexstring: string) {
   const c = color(hexstring)?.rgb();
@@ -109,24 +120,32 @@ function App() {
       });
   }, []);
 
-  // useEffect(() => {
-  //   console.log(selectedLayer?.value, selectedDepth, selectedMonth);
-  //   if (!selectedLayer?.value) {
-  //     return;
-  //   }
-  //   console.log(321);
-  //   fetch(
-  //     `./data/${selectedMonth}-${selectedDepth}-${selectedLayer?.value}.json.gz`,
-  //     {
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //         "Accept-Encoding": "gzip",
-  //       },
-  //     }
-  //   )
-  //     .then((res) => res.json())
-  //     .then((data) => setData(data));
-  // }, [selectedLayer?.value, selectedDepth, selectedMonth]);
+  useEffect(() => {
+    if (!selectedLayer?.value) {
+      return;
+    }
+    fetch(
+      `./data/${selectedMonth}-${selectedDepth}-${selectedLayer?.value}.json.gz`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          "Content-Encoding": "gzip",
+        },
+      }
+    )
+      .then((res) => res.arrayBuffer())
+      .then((buffer) => {
+        const uint8view = new Uint8Array(buffer);
+        let jsonString;
+        if (isGzip(uint8view)) {
+          jsonString = inflate(buffer, { to: "string" });
+        } else {
+          jsonString = new TextDecoder("utf-8").decode(buffer);
+        }
+        return JSON.parse(jsonString);
+      })
+      .then((data) => setData(data));
+  }, [selectedLayer?.value, selectedDepth, selectedMonth]);
 
   useEffect(() => {
     if (openDrawer) {
@@ -139,13 +158,12 @@ function App() {
   const onClose = () => {
     setOpenDrawer(false);
   };
-  console.log(selectedMonth);
 
   const layers = useMemo(
     () => [
       new H3HexagonLayer({
         id: "h3-hexagon-layer",
-        data: `./data/${selectedMonth}-${selectedDepth}-${selectedLayer?.value}.json.gz`,
+        data: data,
         // Попробовать менять не все гексы, а только значения, т. е. getFillColor
         getHexagon: (d) => d.h3,
         getFillColor: (d) => toRGB(getColor(d.value)),
@@ -154,7 +172,7 @@ function App() {
         // beforeId: "watername_ocean", // In interleaved mode render the layer under map labels
       }),
     ],
-    [selectedMonth, selectedDepth, selectedLayer?.value]
+    [data, getColor]
   );
 
   return (
