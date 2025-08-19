@@ -1,6 +1,6 @@
 //@ts-nocheck
 import { MapboxOverlay } from "@deck.gl/mapbox";
-import { Drawer, Select, Space, Tabs, Tooltip } from "antd";
+import { Drawer, message, Select, Space, Tabs, Tooltip } from "antd";
 import { H3HexagonLayer, type DeckGLProps } from "deck.gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -101,6 +101,7 @@ function App() {
   const [selectedDepth, setSelectedDepth] = useState(0);
   const [selectedMonth, setSelectedMonth] = useState("202307");
   const [data, setData] = useState(null);
+  const [messageApi, contextHolder] = message.useMessage();
 
   const getColor = scaleSequential(
     selectedLayer ? selectedLayer.domain : [0, 10],
@@ -112,6 +113,10 @@ function App() {
     : [{ value: 0, label: "0" }];
 
   useEffect(() => {
+    messageApi.info(
+      "You may encounter performance issues on mobile devices. Please be patient."
+    );
+
     fetch("layers.json")
       .then((res) => res.json())
       .then((layers) => {
@@ -177,6 +182,7 @@ function App() {
 
   return (
     <>
+      {contextHolder}
       <div style={{ width: "100vw", height: "100vh" }}>
         <Map
           ref={mapRef}
