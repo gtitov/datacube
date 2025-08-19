@@ -2,9 +2,6 @@
     "version": 8,
     "name": "Positron",
     "metadata": {},
-    "projection": {
-        "type": "globe"
-    },
     "sources": {
         "carto": {
             "type": "vector",

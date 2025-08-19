@@ -182,8 +182,8 @@ function App() {
           ref={mapRef}
           initialViewState={{
             longitude: 50,
-            latitude: 80,
-            zoom: 2,
+            latitude: 70,
+            zoom: 3,
           }}
           mapStyle="style.json"
           onLoad={() => {
