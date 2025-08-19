@@ -1,7 +1,7 @@
 [
     {
         "value": "traffic_density",
-        "label": "Vessel Density, Hrs per km2",
+        "label": "Vessel density, hrs per km2",
         "domain": [
             0,
             4
@@ -12,7 +12,7 @@
     },
     {
         "value": "nppv",
-        "label": "nppv",
+        "label": "Net primary production of biomass expressed as carbon per unit volume in sea water, mg m-3 day-1",
         "domain": [
             0,
             100
@@ -29,7 +29,7 @@
     },
     {
         "value": "chl",
-        "label": "chl",
+        "label": "Mass concentration of chlorophyll a in sea water, mg m-3",
         "domain": [
             5.974105589540684e-05,
             10.078018188476562
@@ -46,7 +46,7 @@
     },
     {
         "value": "kd",
-        "label": "kd",
+        "label": "Volume attenuation coefficient of downwelling radiative flux in sea water, m-1",
         "domain": [
             0.0004502632398136142,
             0.4359288811683655
@@ -63,7 +63,7 @@
     },
     {
         "value": "no3",
-        "label": "no3",
+        "label": "Mole concentration of nitrate in sea water, mmol m-3",
         "domain": [
             0.00011795888088009547,
             49.76505661010742
@@ -80,7 +80,7 @@
     },
     {
         "value": "po4",
-        "label": "po4",
+        "label": "Mole concentration of phosphate in sea water, mmol m-3",
         "domain": [
             0.0007692314634502921,
             2.7663938999176025
@@ -97,7 +97,7 @@
     },
     {
         "value": "phyc",
-        "label": "phyc",
+        "label": "Mole concentration of phytoplankton expressed as carbon in sea water, mmol m-3",
         "domain": [
             0.00034685147215883375,
             69.6260757446289
@@ -114,7 +114,7 @@
     },
     {
         "value": "zooc",
-        "label": "zooc",
+        "label": "Mole concentration of zooplankton expressed as carbon in sea water, mmol m-3",
         "domain": [
             1.8184818372336583e-05,
             91.19196319580078
@@ -131,7 +131,7 @@
     },
     {
         "value": "o2",
-        "label": "o2",
+        "label": "Mole concentration of dissolved molecular oxygen in sea water, mmol m-3",
         "domain": [
             4.311149814042211,
             501.56960541328095
@@ -148,7 +148,7 @@
     },
     {
         "value": "si",
-        "label": "si",
+        "label": "Mole concentration of silicate in sea water, mmol m-3",
         "domain": [
             0.2549650749642007,
             250.00000000000003
@@ -165,7 +165,7 @@
     },
     {
         "value": "expc",
-        "label": "expc",
+        "label": "Sinking mole flux of particulate organic matter expressed as carbon in sea water, mol m-2 d-1",
         "domain": [
             1.2797218259095654e-13,
             664.8308715820312
@@ -182,7 +182,7 @@
     },
     {
         "value": "ph",
-        "label": "ph",
+        "label": "Sea water ph reported on total scale",
         "domain": [
             7.0,
             8.730622291564941
@@ -199,7 +199,7 @@
     },
     {
         "value": "dissic",
-        "label": "dissic",
+        "label": "Mole concentration of dissolved inorganic carbon in sea water, mole m-3",
         "domain": [
             0.9999999999999999,
             2.3263153212697
@@ -216,7 +216,7 @@
     },
     {
         "value": "spco2",
-        "label": "spco2",
+        "label": "Surface partial pressure of carbon dioxide in sea water, Pa",
         "domain": [
             0.4642814013451243,
             59.49120330810547
@@ -233,7 +233,7 @@
     },
     {
         "value": "so",
-        "label": "so",
+        "label": "Sea water salinity, 1e-3",
         "domain": [
             2.2672509279161535,
             35.66694641113281
@@ -250,7 +250,7 @@
     },
     {
         "value": "thetao",
-        "label": "thetao",
+        "label": "Sea water potential temperature, degrees C",
         "domain": [
             -2.299619210074254,
             18.040067672729492
